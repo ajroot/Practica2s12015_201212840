@@ -1,0 +1,76 @@
+/run/media/Javier/Archivos/USB_back_up/Documentos/u_1erSemestre_2015/edd/practico2/archivo.txt
+
+******************************************************************************************************
+pruebas en el arbol
+
+
+   /* Inserción de nodos en árbol: */
+  /* Insertar(&ArbolInt, 10);
+   Insertar(&ArbolInt, 5);
+   Insertar(&ArbolInt, 12);
+   Insertar(&ArbolInt, 4);
+   Insertar(&ArbolInt, 7);
+   Insertar(&ArbolInt, 3);
+   Insertar(&ArbolInt, 6);
+   Insertar(&ArbolInt, 9);
+   Insertar(&ArbolInt, 8);
+   Insertar(&ArbolInt, 11);
+   Insertar(&ArbolInt, 14);
+   Insertar(&ArbolInt, 13);
+   Insertar(&ArbolInt, 2);
+   Insertar(&ArbolInt, 1);
+   Insertar(&ArbolInt, 15);
+   Insertar(&ArbolInt, 10);
+   Insertar(&ArbolInt, 17);
+   Insertar(&ArbolInt, 18);
+   Insertar(&ArbolInt, 16);*/
+
+   //printf("Altura de arbol %d\n", AlturaArbol(ArbolInt, &altura));
+
+   /* Mostrar el árbol en tres ordenes distintos: */
+/*   printf("InOrden: ");
+   InOrden(ArbolInt, Mostrar);
+   printf("\n");
+   printf("PreOrden: ");
+   PreOrden(ArbolInt, Mostrar);
+   printf("\n");
+   printf("PostOrden: ");
+   PostOrden(ArbolInt, Mostrar);
+   printf("\n");
+*/
+   /* Borraremos algunos elementos: */
+/*   printf("N nodos: %d\n", NumeroNodos(ArbolInt, &nnodos));
+   Borrar(&ArbolInt, 5);
+   printf("Borrar 5: ");
+   InOrden(ArbolInt, Mostrar);
+   printf("\n");
+   Borrar(&ArbolInt, 8);
+   printf("Borrar 8: ");
+   InOrden(ArbolInt, Mostrar);
+   printf("\n");
+   Borrar(&ArbolInt, 15);
+   printf("Borrar 15: ");
+   InOrden(ArbolInt, Mostrar);
+   printf("\n");
+   Borrar(&ArbolInt, 245);
+   printf("Borrar 245: ");
+   InOrden(ArbolInt, Mostrar);
+   printf("\n");
+   Borrar(&ArbolInt, 4);
+   printf("Borrar 4: ");
+   InOrden(ArbolInt, Mostrar);
+   printf("\n");
+   Borrar(&ArbolInt, 17);
+   printf("Borrar 17: ");
+   InOrden(ArbolInt, Mostrar);
+   printf("\n");
+*/
+   /* Veamos algunos parámetros */
+/*   printf("N nodos: %d\n", NumeroNodos(ArbolInt, &nnodos));
+   printf("Altura de 1 %d\n", Altura(ArbolInt, 1));
+   printf("Altura de 10 %d\n", Altura(ArbolInt, 10));
+   printf("Altura de arbol %d\n", AlturaArbol(ArbolInt, &altura));
+*/
+   /* Liberar memoria asociada al árbol: */
+/*   Podar(&ArbolInt);
+   system("PAUSE");*/

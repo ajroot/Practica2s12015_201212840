@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <time.h>
+#define GNUPLOT_PATH "/usr/bin/gnuplot"
 #define TRUE 1
 #define FALSE 0
 
@@ -46,10 +47,18 @@ void insertarFin(int value);
 int insertarDentro(int value, int loc);
 int eliminarFinal();
 int eliminarEnmedio(int value);
-void ordenarQuick();
+void quickSort();
 void mostrarInicio();
 void mostrarFin();
+void ordenarBurbuja();
+int tamanoLista();
+void qs();
+void agregarAlista();
 /***************************************************************************/
+void recorrerVector();
+void mostrarVector1();
+void mostrarVector2();
+void graficar();
 float tiempoCargaArbol;
 float tiempoRecorrido;
 float tiempoRecorridoLista;
@@ -57,7 +66,11 @@ float tiempoCargaLista;
 float tiempoOrdenQuick;
 float tiempoOrdenBurbuja;
 int tamanoL;
+int tamanopredefinidolista;
 
+
+int *lista;
+	int *listaBurbuja;
 int main()
 {
    Arbol ArbolInt=NULL;
@@ -65,6 +78,7 @@ int main()
    int nnodos;
    int cargo=0;
    int opcion;
+  tamanopredefinidolista=0;
 		char palabra[100];
 	system("clear");
 	url:
@@ -72,8 +86,9 @@ int main()
 	printf("Ingresa la ruta de tu archivo: \n");
 	scanf("%s",palabra); 
 	int numero;
-	FILE *fp;
-	fp = fopen ( palabra, "r" );        
+	FILE *fp,*fp2;
+	fp = fopen ( palabra, "r" ); 
+	fp2 = fopen ( palabra, "r" );        
 	if (fp==NULL) 
 	{
 		fputs ("Tu archivo no pudo ser cargado,\n verificar archivo y/o direccion.\n",stderr); 
@@ -82,19 +97,52 @@ int main()
 	}
 	else
 	{
+		int contrl=0;
 		char caracter[100];
+   clock_t start = clock(); 
+
 		while (feof(fp) == 0)
 		{
 			fgets(caracter,100,fp);
 			numero=atoi(caracter);
 			Insertar(&ArbolInt, numero);
+			tamanopredefinidolista++;
+			//lista[contrl]=numero;
+//			contrl++;
 			//insertarInicio(numero);
-			insertarFin(numero);
-			//printf("%s",caracter);
+			//insertarFin(numero);
+			//tamanopredefinidolista++;
+			//printf("%d",numero);
 		}
+	tiempoCargaArbol=(double)clock() - start / CLOCKS_PER_SEC;
+//printf("\n Segun Arbol Cantidad de nodos: %d",NumeroNodos(ArbolInt, &nnodos));
+//printf("\n segun Contador Cantidad de datos: %d",tamanopredefinidolista);	
+//system("pause");	
+
+//lista=malloc(2000000*sizeof(int));
+lista=malloc(tamanopredefinidolista*sizeof(int));
+listaBurbuja=malloc(tamanopredefinidolista*sizeof(int));
+char cara[100];
+   clock_t startVector = clock();
+int n;
+       int contado=0;
+		while (feof(fp2) == 0)
+		{
+			fgets(cara,100,fp2);
+			n=atoi(cara);
+			lista[contado]=n;
+			contado++;
+//			printf("\n : %d",n);
+		}
+	tiempoCargaLista=(double)clock() - startVector / CLOCKS_PER_SEC;
+listaBurbuja=lista;
+
+
 		/*printf("\u2714 Carga exitosa.");*/
 		cargo=1;
+printf("Cantidad de Nodos %d :",NumeroNodos(ArbolInt, &nnodos));
 		printf("Se cargó correctamente el archivo\n");
+		//agregarAlista();
 	}
 	menu:
 	system("clear");
@@ -107,9 +155,9 @@ int main()
 		printf("**                                           **\n");
 		printf("**       1.Mostrar tiempos de carga          ** \n");
 		printf("**       2.Mostrar Recorrido Arbol           **\n");
-		printf("**       3.Mostrar Recorrido Lista Doble     **\n");
+		printf("**       3.Mostrar Recorrido Vector          **\n");
 		printf("**       4.Mostrar Graficas                  **\n");
-		printf("**       5.Ordenar Por QuicSort              **\n");
+		printf("**       5.Ordenar Por QuickSort             **\n");
 		printf("**       6.Ordenar por Burbuja               **\n");
 		printf("**       0. salir                            **\n");
 		printf("**                                           **\n");
@@ -141,7 +189,7 @@ int main()
 				 system("clear");
 				 printf("***Arbol\n");
 				 printf("\t->Tiempo transcurrido: %f",tiempoCargaArbol,"\n");
-				 printf("\n***Lista\n");
+				 printf("\n***Vector\n");
 				 printf("\t->Tiempo transcurrido: %f",tiempoCargaLista,"\n");
    				 printf("\n\n\n\n*************************************************\n");
 				 printf("¿Regresar a la Aplicacion?\n");
@@ -184,8 +232,9 @@ int main()
 			system("clear");
 			printf("***Recorrido de lista Doble\n\t");
 			clock_t startl = clock(); 
-			mostrarInicio();
-				tiempoRecorridoLista=(double)clock() - startl / CLOCKS_PER_SEC;
+			//mostrarInicio();
+			mostrarVector1();
+			tiempoRecorridoLista=(double)clock() - startl / CLOCKS_PER_SEC;
 			 printf("\n***Tiempo Recorrido en Orden\n");
 				 printf("\t->Tiempo transcurrido: %f",tiempoRecorridoLista,"\n");
 				 printf("\n\n\n\n¿Regresar a la Aplicacion?\n");
@@ -202,11 +251,56 @@ int main()
 								printf("ADIOS\n");
 							}
 		break;
-		case 4:/***Ordenar QuickSort***/
+		case 4:/***Mostrar Graficas***/
+			graficar();
 		break;
-		case 5:/**Ordenar Burbuja***/
+		case 5:/**Ordenar QuickSort***/
+			system("clear");			
+			printf("\nEspere un momento, Ordenando...\n");
+			clock_t start5 = clock();
+			quickSort();
+			tiempoOrdenQuick=(double)clock() - start5 / CLOCKS_PER_SEC;
+			//system("clear");
+			printf("\nResultado del metodo de ordenamiento\n");
+			int cnt;
+			mostrarVector1();
+			printf("\nEl tiempo demorado en ordenarpor QuickSort:%d ",tiempoOrdenQuick);
+			printf("\n\n\n¿Regresar a la Aplicacion?\n");
+			printf("      1.Si\n");
+			printf("      2.No\n");	
+			scanf("%d",&opcion); 
+			if(opcion==1)
+				{
+					goto menu;
+				}
+			else
+				{
+					system("clear");
+					printf("ADIOS\n");
+				}
 		break;
-		case 6:/**Mostrar tiempo de Ordenado*/
+		case 6:/**ordenar Burbuja*/
+			printf("\nEspere un momento, Ordenando...\n");
+			clock_t start4 = clock();
+			ordenarBurbuja();
+			tiempoOrdenQuick=(double)clock() - start4 / CLOCKS_PER_SEC;
+			mostrarVector2();
+			printf("\nEl tiempo demorado en ordenarpor QuickSort:%d ",tiempoOrdenQuick);
+			printf("\n\n\n¿Regresar a la Aplicacion?\n");
+			printf("      1.Si\n");
+			printf("      2.No\n");	
+			scanf("%d",&opcion); 
+			if(opcion==1)
+				{
+					goto menu;
+				}
+			else
+				{
+					system("clear");
+					printf("ADIOS\n");
+				}
+			//mostrarInicio();
+			goto menu;
 		break;
 	}
 	
@@ -228,7 +322,7 @@ void Podar(Arbol *a)
 
 void Insertar(Arbol *a, int dat)
 {
-   clock_t start = clock(); 
+
    pNodo padre = NULL;
    pNodo actual = *a;
 
@@ -265,7 +359,7 @@ void Insertar(Arbol *a, int dat)
       actual->FE = 0;
       Equilibrar(a, padre, DERECHO, TRUE);
   }
-	tiempoCargaArbol=(double)clock() - start / CLOCKS_PER_SEC;
+
 }
 
 void Equilibrar(Arbol *a, pNodo nodo, int rama, int nuevo)
@@ -567,10 +661,7 @@ void Mostrar(int *d)
 /*****************************************FIN DE METODOS ARBOL*******************************************/
 
 /****************************************INICIO METODOS LISTA DOBLE**************************************/
-#include <stdio.h>
-//#include <conio.h>
-#include <malloc.h>
-#include <stdlib.h>
+
 
 struct nodo
 {
@@ -603,7 +694,7 @@ void insertarInicio(int value)
 
 void insertarFin(int value)
 {
-   clock_t start = clock(); 
+ 
 	struct nodo *var,*temp;
 	var=(struct nodo *)malloc(sizeof(struct nodo));
 		var->dato=value;
@@ -627,7 +718,7 @@ void insertarFin(int value)
 		ultimo->anterior=temp;
 		ultimo->siguiente=NULL;		
 	}
-	tiempoCargaLista=(double)clock() - start / CLOCKS_PER_SEC;
+
 }
 
 int insertarDentro(int value, int loc)
@@ -711,10 +802,81 @@ int eliminarEnmedio(int value)
 		}		
 	}
 }
+	
 
-void ordenarQuick()
+void agregarAlista()
+{
+	struct nodo *temp, *t;
+	lista=malloc(tamanopredefinidolista * sizeof(int));
+	temp=primero;
+	int a=tamanopredefinidolista;
+	int control=0;
+	while(control<a)
+	{
+		lista[control]=temp->dato;
+		temp=temp->siguiente;
+		control++;
+	}
+	listaBurbuja=lista;
+}
+void quickSort()
+{
+ 
+	qs(lista,0,tamanopredefinidolista-1);
+
+}
+
+
+void qs(int lista[],int limite_izq,int limite_der)
+{
+    int izq,der,temporal,pivote;
+    izq=limite_izq;
+    der = limite_der;
+    pivote = lista[(izq+der)/2];
+ 
+    do{
+        while(lista[izq]<pivote && izq<limite_der)izq++;
+        while(pivote<lista[der] && der > limite_izq)der--;
+        if(izq <=der)
+        {
+            temporal= lista[izq];
+            lista[izq]=lista[der];
+            lista[der]=temporal;
+            izq++;
+            der--;
+ 
+        }
+	 
+    }
+	while(izq<=der);
+	    if(limite_izq<der){qs(lista,limite_izq,der);}
+	    if(limite_der>izq){qs(lista,izq,limite_der);}
+
+}
+
+void eliminarNodo()
 {
 
+}
+
+
+void ordenarBurbuja()
+{
+	int i,j;
+	int temp=0;             //Variable temporal.
+	 
+	for (i=1;i<tamanopredefinidolista;i++)
+	{
+	       for (j=0; j <= tamanopredefinidolista-1 ;j++) // for(j=0; j < Nelementos-1; j++) es menor y no menor igual
+	       {
+		  if (listaBurbuja[j] > lista[j+1])//Condicion mayor-menor
+		  {
+		    temp=listaBurbuja[j];
+		    listaBurbuja[j]=listaBurbuja[j+1];
+		    listaBurbuja[j+1]=temp;
+		  }
+	       }
+	}
 }
 
 /* main()
@@ -754,7 +916,7 @@ void mostrarFin()
 	}
 
 }
-void tamanoLista()
+int tamanoLista()
 {
 	int numero;
 	struct nodo *temp;
@@ -764,7 +926,50 @@ void tamanoLista()
 		numero++;
 		temp=temp->anterior;
 	}
-	tamanoL=numero;
+	return numero;
+}
 
+void recorrerVector()
+{
+	int w,xq;
+	for(w=0;w<tamanopredefinidolista;w++)
+	{
+		xq=lista[w];
+	}
+}
+
+void mostrarVector1()
+{
+	int w,xq;
+	for(w=0;w<tamanopredefinidolista;w++)
+	{
+		printf(", %d",lista[w]);
+	}
+
+}
+void mostrarVector2()
+{
+	int w,xq;
+	for(w=0;w<tamanopredefinidolista;w++)
+	{
+		printf(", %d",listaBurbuja[w]);
+	}
+
+}
+
+void graficar()
+{
+	FILE *gp;
+	gp = popen(GNUPLOT_PATH, "w");
+	if(gp == NULL)
+	{
+		fprintf(stderr, "Oops, I can't find %s.", GNUPLOT_PATH);
+        }
+	fprintf(gp, "set title \"Function A\" \n");
+//	fprintf(gp, "set samples 2048 \n");
+	fprintf(gp, "plot [-512:512] y(x)=a+b*x+c*x*x");
+	fflush(gp); /* Don't forget to flush the buffer.*/
+	getchar();
+	pclose(gp);
 }
 
