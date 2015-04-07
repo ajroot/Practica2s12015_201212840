@@ -7,8 +7,6 @@
 #define FALSE 0
 
 enum {IZQUIERDO, DERECHO};
-
-
 typedef struct _nodo {
    int dato;
    int FE;
@@ -54,7 +52,7 @@ void ordenarBurbuja();
 int tamanoLista();
 void qs();
 void agregarAlista();
-/***************************************************************************/
+/*******************Funciones para vectores********************************************************/
 void recorrerVector();
 void mostrarVector1();
 void mostrarVector2();
@@ -82,8 +80,20 @@ int main()
 		char palabra[100];
 	system("clear");
 	url:
-	printf("***********************************************\n");
+	printf("******      *****  *************   *****        *****  *****              ******  ************    \n");
+	printf("********    *****  *************   *******      *****  *****             ******   ************    \n");
+	printf("*********   *****  ****            *********    *****    *****          ******    ************    \n");
+	printf("*********   *****  ****            ***********  *****     ******       ******     *****           \n");
+	printf("********    *****  *************   ************* ****       ******    ******      ************    \n");
+	printf("*****       *****  *************   *****  ***********        ******  ******       ************    \n");
+	printf("********    *****  *****           *****    *********          ***** *****        *****           \n");
+	printf("*********   *****  *****           *****      *******           *********         *****           \n");
+	printf("**********  *****  **************  *****        *****            *******          ************    ***  ***  ***\n");
+	printf("*********** *****  **************  *****         ****             *****           ************    ***  ***  ***\n");
+	printf("\n");
+	printf("\n");
 	printf("Ingresa la ruta de tu archivo: \n");
+	printf("-->  ");
 	scanf("%s",palabra); 
 	int numero;
 	FILE *fp,*fp2;
@@ -163,6 +173,9 @@ printf("Cantidad de Nodos %d :",NumeroNodos(ArbolInt, &nnodos));
 		printf("**                                           **\n");
 		printf("***********************************************\n");
 		printf("***********************************************\n");
+		printf("\n");
+		printf("\n");
+		printf("-> Ingresar Opcion:\n");
 		scanf("%d",&opcion); 
 		
 	}
@@ -185,7 +198,7 @@ printf("Cantidad de Nodos %d :",NumeroNodos(ArbolInt, &nnodos));
 			}
 			
 		break;
-		case 1:/***Mostrar Gracias***/
+		case 1:/***Mostrar tiempo de carga***/
 				 system("clear");
 				 printf("***Arbol\n");
 				 printf("\t->Tiempo transcurrido: %f",tiempoCargaArbol,"\n");
@@ -228,7 +241,7 @@ printf("Cantidad de Nodos %d :",NumeroNodos(ArbolInt, &nnodos));
 								printf("ADIOS\n");
 							}
 		break;
-		case 3:/**Mostrar Recorrido lista Doble****/
+		case 3:/**Mostrar Recorrido Vector/tiempo de carga****/
 			system("clear");
 			printf("***Recorrido de lista Doble\n\t");
 			clock_t startl = clock(); 
@@ -252,7 +265,23 @@ printf("Cantidad de Nodos %d :",NumeroNodos(ArbolInt, &nnodos));
 							}
 		break;
 		case 4:/***Mostrar Graficas***/
-			graficar();
+			system("clear");
+			printf("***Recorrido de lista Doble\n\t");
+			graficar(tamanopredefinidolista,tiempoRecorridoLista);
+			printf("Grafica creada Exitosamente");
+			printf("\n\n\n\n¿Regresar a la Aplicacion?\n");
+			printf("      1.Si\n");
+			printf("      2.No\n");	
+			scanf("%d",&opcion); 
+			if(opcion==1)
+			{
+				goto menu;
+			}
+			else
+			{
+				system("clear");
+				printf("ADIOS\n");
+			}
 		break;
 		case 5:/**Ordenar QuickSort***/
 			system("clear");			
@@ -957,19 +986,28 @@ void mostrarVector2()
 
 }
 
-void graficar()
-{
-	FILE *gp;
-	gp = popen(GNUPLOT_PATH, "w");
-	if(gp == NULL)
-	{
-		fprintf(stderr, "Oops, I can't find %s.", GNUPLOT_PATH);
-        }
-	fprintf(gp, "set title \"Function A\" \n");
-//	fprintf(gp, "set samples 2048 \n");
-	fprintf(gp, "plot [-512:512] y(x)=a+b*x+c*x*x");
-	fflush(gp); /* Don't forget to flush the buffer.*/
-	getchar();
-	pclose(gp);
+void graficar(int cantidad, double tiempo_maximo){
+    FILE *gp;
+    gp= popen(GNUPLOT_PATH, "w");
+    if(gp==NULL){
+        fprintf(stderr, "No ha sido posible ejecutar GnuPlot, verifique su instalacion.");
+        exit(EXIT_FAILURE);
+    }
+    fprintf(gp,"set terminal jpeg\n");
+    fprintf(gp,"set output 'TiempCargaTeorico.jpg'\n");
+    fprintf(gp,"set multiplot\n");
+    fprintf(gp,"set size 1,0.5\n");
+    fprintf(gp,"set title \"Tiempo de carga Teorico\"\n");
+    fprintf(gp,"set origin 0.0,0.0\n");
+    fprintf(gp,"set xrange[0:100]\n");
+    fprintf(gp,"plot log(%d)\n",cantidad);
+    fprintf(gp,"set origin 0.0,0.5\n");
+    fprintf(gp,"set xrange[0:100]\n");
+    fprintf(gp,"set title \"Tiempo de carga Practico\"\n");
+    fprintf(gp,"plot %f\n",tiempo_maximo);
+    fprintf(gp,"unset multiplot\n");
+    fflush(gp);
+    getchar();
+    pclose(gp);
+    return(EXIT_SUCCESS);
 }
-
